@@ -11,9 +11,10 @@ subs:
   - "@name"
   - "@cxf_version"
   - "@fabric_host"
-  src/main/resources/wsdl/person.wsdl: 
   - "@package"
+  src/main/resources/wsdl/person.wsdl: 
   - "@package_reverse"
+  - "@package"
 copies: 
   src/main/resources/log4j.properties: src/main/resources/log4j.properties
   src/main/resources/META-INF/spring/beans.xml: src/main/resources/META-INF/spring/beans.xml
