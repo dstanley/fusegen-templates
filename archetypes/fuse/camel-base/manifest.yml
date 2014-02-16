@@ -1,0 +1,26 @@
+--- 
+subs: 
+  src/test/java/@base_path/RouteTest.java: 
+  - "@package"
+  pom.xml: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
+  - "@packaging"
+  - "@project_version"
+  - "@name"
+  - "@camel_version"
+  - "@fabric_host"
+  src/main/java/@base_path/Hello.java: 
+  - "@package"
+  src/main/resources/OSGI-INF/blueprint/blueprint.xml: 
+  - "@package"
+  src/main/java/@base_path/HelloBean.java: 
+  - "@package"
+copies: 
+  src/main/resources/log4j.properties: src/main/resources/log4j.properties
+  src/main/java/org/fusesource/support/HelloBean.java: src/main/java/@base_path/HelloBean.java
+  src/main/resources/OSGI-INF/blueprint/blueprint.xml: src/main/resources/OSGI-INF/blueprint/blueprint.xml
+  pom.tmpl: pom.xml
+  src/test/java/org/fusesource/support/RouteTest.java: testcase/src/test/java/@base_path/RouteTest.java
+  src/main/java/org/fusesource/support/Hello.java: src/main/java/@base_path/Hello.java
