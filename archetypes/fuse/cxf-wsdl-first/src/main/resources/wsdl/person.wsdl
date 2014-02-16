@@ -28,7 +28,7 @@
 	targetNamespace="http://@package_reverse/wsdl-first">
 
 	<wsdl:types>
-		<xsd:schema targetNamespace="http://@package_reverse/samples/wsdl-first/types"
+		<xsd:schema targetNamespace="http://@package_reverse/wsdl-first/types"
 		            elementFormDefault="qualified">
 			<xsd:element name="GetPerson">
 			  <xsd:complexType>
