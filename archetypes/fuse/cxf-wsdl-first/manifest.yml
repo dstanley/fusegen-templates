@@ -1,0 +1,24 @@
+--- 
+subs: 
+  src/main/resources/META-INF/beans.xml: 
+  - "@package_reverse"
+  - "@package"
+  pom.xml: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
+  - "@packaging"
+  - "@name"
+  - "@cxf_version"
+  - "@fabric_host"
+  src/main/resources/wsdl/person.wsdl: 
+  - "@package"
+  - "@package_reverse"
+copies: 
+  src/main/resources/log4j.properties: src/main/resources/log4j.properties
+  src/main/resources/META-INF/beans.xml: src/main/resources/META-INF/beans.xml
+  pom.tmpl: pom.xml
+  src/main/resources/wsdl/person.wsdl: src/main/resources/wsdl/person.wsdl
+description: Creates an OSGi wsdl-first cxf spring project. Uses cxf-codegen plugin.
+
+  
