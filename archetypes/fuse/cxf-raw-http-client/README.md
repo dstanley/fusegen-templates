@@ -5,7 +5,7 @@ Compiling the client:
 
 Running the client:
 
-   >java client -msg <soap message> -endpoint <endpoint>
+   >java client -msg [soap message] -endpoint [endpoint]
 
    e.g. java client -msg request.xml -endpoint http://localhost:9000
 
