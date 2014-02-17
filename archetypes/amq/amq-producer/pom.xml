@@ -112,6 +112,7 @@
 									   <argument>61616</argument>
 									   <!-- Number of producer threads -->
 									   <argument>10</argument>
+									   <!-- Number of messages per thread -->
 									   <argument>100</argument>
 									</arguments>
                                 </configuration>

@@ -1,4 +1,4 @@
-A spring based jms queue consumer that uses Springs DefaultMessageListenerContainer.
+A java jms producer
 
 Compiling the client:
 
@@ -6,15 +6,20 @@ Compiling the client:
 
 Running the example:
 
-   >mvn -pConsumer
-
-To change the number of messages to consume etc, edit:
-
-   >./src/main/resources/consumer.properties
-
-The DMLC is configured via:
-
-   >./src/main/resources/consumer.xml
+   >mvn -Pproducer
 
 
+Edit the profile in the pom.xml to configure properties e.g.
 
+   <arguments>
+       <argument>localhost</argument>
+	   <argument>61616</argument>
+	   <!-- Number of producer threads -->
+	   <argument>10</argument>
+	   <!-- Number of messages per thread -->
+	   <argument>100</argument>
+   </arguments>
+
+To change the destination edit Producer.java
+
+   Destination destination = session.createQueue("TESTQUEUE");
