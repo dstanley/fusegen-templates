@@ -5,7 +5,7 @@ Compiling the client:
 
    >mvn install
 
-Running the example:
+Running the example inside JBoss Fuse:
 
    >osgi:install -s mvn:@group_id:@artifact_id:@project_version
 
