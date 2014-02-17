@@ -17,4 +17,7 @@ The DMLC is configured via:
    >./src/main/resources/consumer.xml
 
 
+Uses:
+
+- Helpful to test Spring DMLC consumers and drain destinations
 
