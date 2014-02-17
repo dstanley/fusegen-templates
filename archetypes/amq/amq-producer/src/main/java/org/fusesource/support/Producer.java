@@ -29,8 +29,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
  */
 public class Producer {
 	private int PRODUCER_COUNT=5;
-	private int START_DESTINATION_COUNT=0;
-	private int END_DESTINATION_COUNT=100;
 	private int NUM_MSGS_SEND = 500;
 	
 	private ConnectionFactory factory;
@@ -77,7 +75,7 @@ public class Producer {
 			System.out.println("NUM_MSGS_SEND  : " + NUM_MSGS_SEND); 
 		
 			for(int index=0; index<PRODUCER_COUNT; index++) {
-				Producer producerWorker = new Producer(uri, index);
+				Worker producerWorker = new Worker(uri, index);
 				producers[index] = new Thread(producerWorker);
 				producers[index].start();
 			}
@@ -99,7 +97,7 @@ public class Producer {
  * Message producer running as a separate thread
  *
  */
-class Producer implements Runnable{
+class Worker implements Runnable{
 	public Object init = new Object();
 	
 	private Log logger = null;
@@ -110,9 +108,9 @@ class Producer implements Runnable{
 	
 	private ArrayList<MessageProducer> producers = new ArrayList<MessageProducer>();
 	
-	public Producer(String url, int producerId) {
+	public Worker(String url, int producerId) {
 		
-		logger = LogFactory.getLog(Producer.class);
+		logger = LogFactory.getLog(Worker.class);
 		this.url=url;
 		this.producerId=producerId;
 	}	
