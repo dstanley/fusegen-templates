@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+  xmlns="http://www.springframework.org/schema/beans" 
+  xmlns:amq="http://activemq.org/config/1.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+  
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<property name="location" value="classpath:consumer.properties" />
+  </bean>
+
+  <bean id="pooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+      <property name="connectionFactory">
+         <bean class="org.apache.activemq.ActiveMQConnectionFactory">
+            <property name="brokerURL">
+               <value>tcp://localhost:61616?wireFormat.maxInactivityDuration=0</value>
+            </property>
+            <property name="copyMessageOnSend"><value>false</value></property>
+            <property name="useAsyncSend"><value>true</value></property>
+            <property name="redeliveryPolicy">
+               <bean class="org.apache.activemq.RedeliveryPolicy">
+                  <property name="maximumRedeliveries" value="999999999" />
+                  <property name="initialRedeliveryDelay" value="${amq.redeliveryDelay}" />
+               </bean>
+            </property>
+            <property name="prefetchPolicy">
+               <bean class="org.apache.activemq.ActiveMQPrefetchPolicy">
+                  <property name="queuePrefetch" value="1" />
+               </bean>
+            </property>
+         </bean>
+      </property>
+      <property name="maximumActive" value="${amq.maxsessions}"/>
+      <!--  property name="maxConnections" value="${amq.maxConsumers}" / -->
+   </bean>
+   
+   <bean id="listener" class="com.fusesource.support.Consumer" />
+    
+   <bean id="myMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"  destroy-method="stop">
+      <property name="connectionFactory" ref="pooledConnectionFactory" />
+      <property name="destinationName" value="${amq.queuename}" />
+      <property name="messageListener" ref="listener" />
+      <property name="concurrentConsumers" value="${amq.initialConsumers}" />
+      <!--property name="maxConcurrentConsumers" value="${amq.maxConsumers}" / -->
+      <property name="maxMessagesPerTask" value="150" />
+      <property name="sessionTransacted" value="true" />
+      <!--property name="cacheLevelName" value="CACHE_CONSUMER" / -->
+      <property name="cacheLevel" value="3" />
+   </bean>   
+   
+</beans>
