@@ -1,5 +1,7 @@
 --- 
 subs:
+  README.md: 
+  - "@project_version"
 copies: 
   client.java: client.java
   README.md: README.md
