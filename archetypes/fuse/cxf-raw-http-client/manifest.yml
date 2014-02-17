@@ -1,4 +1,5 @@
 --- 
+subs:
 copies: 
   client.java: client.java
   README.md: README.md
