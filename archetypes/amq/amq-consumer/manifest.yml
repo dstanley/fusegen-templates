@@ -1,6 +1,6 @@
 --- 
 subs: 
-  src/test/java/@base_path/Consumer.java: 
+  src/main/java/@base_path/Consumer.java: 
   - "@package"
   pom.xml: 
   - "@project_version"
