@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:hel="http://@package_reverse">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <hel:sayHello>
+         <hel:name>Dave</hel:name>
+      </hel:sayHello>
+   </soapenv:Body>
+</soapenv:Envelope>

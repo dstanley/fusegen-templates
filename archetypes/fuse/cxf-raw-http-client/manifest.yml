@@ -1,0 +1,8 @@
+--- 
+copies: 
+  client.java: client.java
+  README.md: README.md
+  request.xml: request.xml
+  run_client.sh: run_client.sh
+description: Creates a simple client that reads in a raw soap xml message and fires it at a soap endpoint
+  
