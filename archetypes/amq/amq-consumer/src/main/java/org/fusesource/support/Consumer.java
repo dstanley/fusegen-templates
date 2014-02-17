@@ -20,7 +20,7 @@ import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
  */
 public class Consumer implements MessageListener {
 
-	Log log = LogFactory.getLog(ConsumerLoad.class);
+	Log log = LogFactory.getLog(Consumer.class);
 	
 	private int NUM_MSGS_CONSUME = 1000;
 	private int MAX_EVENTS_PER_MESSAGE=150;
@@ -30,11 +30,11 @@ public class Consumer implements MessageListener {
 	private Queue<TextMessage> queue = new ConcurrentLinkedQueue<TextMessage>();
 
 	public static void main(String[] args) {
-		new ConsumerLoad().doIt();
+		new Consumer().doIt();
 	}
 
     public void doIt() {
-		Thread.currentThread().setContextClassLoader(ConsumerLoad.class.getClassLoader());
+		Thread.currentThread().setContextClassLoader(Consumer.class.getClassLoader());
 	    ClassPathXmlApplicationContext context1 = new ClassPathXmlApplicationContext(config);
 		log.info("Spring context initialized .. waiting for messages");
 			
@@ -44,9 +44,9 @@ public class Consumer implements MessageListener {
 		worker.start();
 			
 		while(messageCount < NUM_MSGS_CONSUME) {
-			//try {
-			//	Thread.sleep(2000);
-			//} catch(Exception ignore) {}
+			try {
+				Thread.sleep(5000);
+			} catch(Exception ignore) {}
 			
 			if((messageCount % 100) == 0) {
 				log.info("Consumed: " + messageCount);

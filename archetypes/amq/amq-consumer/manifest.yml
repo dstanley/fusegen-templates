@@ -14,6 +14,8 @@ subs:
   - "@package"
   src/main/resources/consumer.xml: 
   - "@package"
+  src/main/resources/log4j.xml: 
+  - "@package"
 copies: 
   src/main/java/org/fusesource/support/Consumer.java: src/main/java/@base_path/Consumer.java
   src/main/resources/log4j.xml: src/main/resources/log4j.xml

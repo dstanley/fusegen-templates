@@ -37,14 +37,14 @@
         </layout>
     </appender>
 -->
-    <logger name="com.fusesource.support">
+    <logger name="@package">
         <level value="DEBUG"/>
     </logger>
     <logger name="org.apache">
         <level value="WARN"/>
     </logger>
     <logger name="org.springframework">
-        <level value="DEBUG"/>
+        <level value="INFO"/>
     </logger>
     <logger name="org.jencks">
         <level value="WARN"/>

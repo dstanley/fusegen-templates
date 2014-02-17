@@ -31,11 +31,11 @@
             </property>
          </bean>
       </property>
-      <property name="maximumActive" value="${amq.maxsessions}"/>
+      <!--  property name="maximumActive" value="${amq.maxsessions}"/ -->
       <!--  property name="maxConnections" value="${amq.maxConsumers}" / -->
    </bean>
    
-   <bean id="listener" class="com.fusesource.support.Consumer" />
+   <bean id="listener" class="@package.Consumer" />
     
    <bean id="myMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer"  destroy-method="stop">
       <property name="connectionFactory" ref="pooledConnectionFactory" />
