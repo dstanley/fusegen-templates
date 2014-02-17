@@ -17,10 +17,15 @@ subs:
   - "@package"
   src/main/java/@base_path/HelloBean.java: 
   - "@package"
+  README.md: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
 copies: 
   src/main/resources/log4j.properties: src/main/resources/log4j.properties
   src/main/java/org/fusesource/support/HelloBean.java: src/main/java/@base_path/HelloBean.java
   src/main/resources/OSGI-INF/blueprint/blueprint.xml: src/main/resources/OSGI-INF/blueprint/blueprint.xml
   pom.tmpl: pom.xml
+  README.md: README.md
   src/test/java/org/fusesource/support/RouteTest.java: src/test/java/@base_path/RouteTest.java
   src/main/java/org/fusesource/support/Hello.java: src/main/java/@base_path/Hello.java

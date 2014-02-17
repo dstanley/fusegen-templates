@@ -15,10 +15,15 @@ subs:
   src/main/resources/wsdl/person.wsdl: 
   - "@package_reverse"
   - "@package"
+  README.md: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
 copies: 
   src/main/resources/log4j.properties: src/main/resources/log4j.properties
   src/main/resources/META-INF/spring/beans.xml: src/main/resources/META-INF/spring/beans.xml
   pom.tmpl: pom.xml
+  README.md: README.md
   src/main/resources/wsdl/person.wsdl: src/main/resources/wsdl/person.wsdl
 description: Creates an OSGi wsdl-first cxf spring project. Uses cxf-codegen plugin.
 
