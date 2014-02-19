@@ -7,5 +7,6 @@ copies:
   README.md: README.md
   request.xml: request.xml
   run_client.sh: run_client.sh
-description: Creates a simple client that reads in a raw soap xml message and fires it at a soap endpoint
-  
+description: Creates a simple client that reads in a raw soap xml message and fires it at a soap endpoint.
+short_description: Reads in a raw soap message and fires it at a soap endpoint.  
+version: 0.0.1 

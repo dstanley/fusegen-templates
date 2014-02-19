@@ -30,3 +30,6 @@ copies:
   README.md: README.md
   src/test/java/org/fusesource/support/RouteTest.java: src/test/java/@base_path/RouteTest.java
   src/main/java/org/fusesource/support/Hello.java: src/main/java/@base_path/Hello.java
+description: OSGi Blueprint Camel route using a timer to trigger a java bean invocation.
+short_description: OSGi Blueprint Camel route. Uses timer to trigger java bean invocation.
+version: 0.0.1  

@@ -19,3 +19,6 @@ copies:
   src/main/resources/log4j.xml: src/main/resources/log4j.xml
   pom.xml: pom.xml
   README.md: README.md
+short_description: Creates a multi-threaded JMS Producer
+description: Creates a multi-threaded JMS producer.
+version: 0.0.1
