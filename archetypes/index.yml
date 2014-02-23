@@ -2,7 +2,7 @@
 meta: 
   author: dstanley
   version: 0.0.1
-  baseuri: ""
+  baseuri: https://raw.github.com/dstanley/fusegen-templates/master/archetypes/
 quickstarts: 
   fuse: 
   - name: camel-base
