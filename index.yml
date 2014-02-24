@@ -2,7 +2,7 @@
 meta: 
   author: dstanley
   version: 0.0.1
-  baseuri: https://raw.github.com/dstanley/fusegen-templates/master/archetypes/
+  baseuri: https://raw.github.com/dstanley/fusegen-templates/master
 quickstarts: 
   fuse: 
   - name: camel-base
@@ -19,14 +19,14 @@ quickstarts:
     manifest: manifest.yml
   amq: 
   - name: amq-consumer
+    short_description: Creates a JMS Consumer
+    version: 0.0.1
+    manifest: manifest.yml
+  - name: amq-consumer-spring
     short_description: Creates a spring DMLC JMS Consumer
     version: 0.0.1
     manifest: manifest.yml
   - name: amq-producer
     short_description: Creates a multi-threaded JMS Producer
-    version: 0.0.1
-    manifest: manifest.yml
-  - name: amq-security
-    short_description: Security configuration example for JBoss A-MQ (karaf)
     version: 0.0.1
     manifest: manifest.yml
