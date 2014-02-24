@@ -2,6 +2,8 @@
 subs: 
   src/main/java/@base_path/Consumer.java: 
   - "@package"
+  src/main/java/@base_path/CommandLineSupport.java: 
+  - "@package"
   pom.xml: 
   - "@project_version"
   - "@group_id"
@@ -12,17 +14,14 @@ subs:
   - "@activemq_version"
   - "@spring_version"
   - "@package"
-  src/main/resources/consumer.xml: 
-  - "@package"
   src/main/resources/log4j.xml: 
   - "@package"
 copies: 
   src/main/java/org/fusesource/support/Consumer.java: src/main/java/@base_path/Consumer.java
+  src/main/java/org/fusesource/support/CommandLineSupport.java: src/main/java/@base_path/CommandLineSupport.java
   src/main/resources/log4j.xml: src/main/resources/log4j.xml
-  src/main/resources/consumer.xml: src/main/resources/consumer.xml
-  src/main/resources/consumer.properties: src/main/resources/consumer.properties
   pom.xml: pom.xml
   README.md: README.md
-short_description: Creates a spring DMLC JMS Consumer
-description: Creates a spring based DMLC JMS Consumer
+short_description: Creates a JMS Consumer
+description: Creates a JMS Consumer
 version: 0.0.1

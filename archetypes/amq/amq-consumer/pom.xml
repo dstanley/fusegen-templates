@@ -106,8 +106,26 @@
                                     <goal>java</goal>
                                 </goals>
                                 <configuration>
-                                   <mainClass>@package.Consumer</mainClass>
-                                </configuration>
+	
+							       <mainClass>@package.Consumer</mainClass>
+								   <arguments>
+								       <argument>--url=tcp://localhost:61616</argument>
+									   <argument>--topic=false</argument>
+									   <argument>--subject=JBOSS.AMQ</argument>
+									   <argument>--durable=false</argument>
+									   <argument>--max-messages=100</argument>
+									   <argument>--topic=false</argument>
+									   <argument>--client-id=consumer1</argument>
+									   <argument>--parallel-threads=1</argument>
+									   <argument>--transacted=false</argument>
+									   <argument>--sleep-time=0</argument>
+									   <argument>--verbose=true</argument>
+									   <argument>--ack-mode=AUTO_ACKNOWLEDGE</argument>	
+									   <argument>--receive-time-out=0</argument>
+									   <argument>--user=admin</argument>
+									   <argument>--password=admin</argument>
+								   </arguments>
+    							</configuration>
                             </execution>
 			    			
                         </executions>

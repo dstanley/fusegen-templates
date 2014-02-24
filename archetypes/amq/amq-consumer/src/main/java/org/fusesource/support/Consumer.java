@@ -1,123 +1,355 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package @package;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
 
+import javax.jms.Connection;
+import javax.jms.DeliveryMode;
+import javax.jms.Destination;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.TextMessage;
+import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.jms.Topic;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.Queue;
-
-import org.apache.xbean.spring.context.ClassPathXmlApplicationContext;
-
+import org.apache.activemq.ActiveMQConnection;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
- * JMS Consumer Client
+ * A simple tool for consuming messages
+ * 
  * 
  */
-public class Consumer implements MessageListener {
+public class Consumer extends Thread implements MessageListener, ExceptionListener {
 
-	Log log = LogFactory.getLog(Consumer.class);
-	
-	private int NUM_MSGS_CONSUME = 1000;
-	private int MAX_EVENTS_PER_MESSAGE=150;
-	private static int messageCount=0;
-	private String config="consumer.xml";
-	
-	private Queue<TextMessage> queue = new ConcurrentLinkedQueue<TextMessage>();
+    private boolean running;
 
-	public static void main(String[] args) {
-		new Consumer().doIt();
-	}
+    private Session session;
+    private Destination destination;
+    private MessageProducer replyProducer;
 
-    public void doIt() {
-		Thread.currentThread().setContextClassLoader(Consumer.class.getClassLoader());
-	    ClassPathXmlApplicationContext context1 = new ClassPathXmlApplicationContext(config);
-		log.info("Spring context initialized .. waiting for messages");
-			
-		// Kick off worker thread
-		MessageWorker mw = new MessageWorker(1000);
-		Thread worker = new Thread(mw);
-		worker.start();
-			
-		while(messageCount < NUM_MSGS_CONSUME) {
-			try {
-				Thread.sleep(5000);
-			} catch(Exception ignore) {}
-			
-			if((messageCount % 100) == 0) {
-				log.info("Consumed: " + messageCount);
-			}
-		}
+    private boolean pauseBeforeShutdown = false;
+    private boolean verbose = true;
+    private int maxMessages;
+    private static int parallelThreads = 1;
+    private String subject = "TOOL.DEFAULT";
+    private boolean topic;
+    private String user = ActiveMQConnection.DEFAULT_USER;
+    private String password = ActiveMQConnection.DEFAULT_PASSWORD;
+    private String url = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private boolean transacted;
+    private boolean durable;
+    private String clientId;
+    private int ackMode = Session.AUTO_ACKNOWLEDGE;
+    private String consumerName = "James";
+    private long sleepTime;
+    private long receiveTimeOut;
+	private long batch = 10; // Default batch size for CLIENT_ACKNOWLEDGEMENT or SESSION_TRANSACTED
+	private long messagesReceived = 0;
 
-		log.info("Completed: " + messageCount);
-		
-		context1.stop();	
-		mw.finished() ;		
-		System.exit(0);
-	}
+    public static void main(String[] args) {
+        ArrayList<Consumer> threads = new ArrayList();
+        Consumer consumer = new Consumer();
+        String[] unknown = CommandLineSupport.setOptions(consumer, args);
+        if (unknown.length > 0) {
+            System.out.println("Unknown options: " + Arrays.toString(unknown));
+            System.exit(-1);
+        }
+        consumer.showParameters();
+        for (int threadCount = 1; threadCount <= parallelThreads; threadCount++) {
+            consumer = new Consumer();
+            CommandLineSupport.setOptions(consumer, args);
+            consumer.start();
+            threads.add(consumer);
+        }
 
-	
-	public void onMessage(Message message) {
-		if (message instanceof TextMessage) {
-			queue.add((TextMessage)message);
-			messageCount=messageCount+1;
-			
-		}
-		else { 
-			Thread.currentThread().dumpStack();
-			throw new IllegalArgumentException("Message must be of type TextMessage"); 
-		}
-	}
-	
-	class MessageWorker implements Runnable {
-		private int timeout = 1000;
-		private boolean stop=false;
-		Log logger;
-		
-	
-		public MessageWorker(int timeout) {
-			logger = LogFactory.getLog(MessageWorker.class);
-			this.timeout=timeout;	
-		}
-		
-		public void finished() {
-			this.stop=true;
-		
-		}
-			
-		public void run() {
-			while(!stop) {
-				StringBuilder sb = new StringBuilder("<msg>");				
-				for (int i = 1; i < MAX_EVENTS_PER_MESSAGE; i++) {
-					TextMessage msg = queue.poll();
-					
-					if (msg != null) { 
-						sb.append(msg); 
-						messageCount=messageCount+1; 
-					} else { break; }
+        while (true) {
+            Iterator<Consumer> itr = threads.iterator();
+            int running = 0;
+            while (itr.hasNext()) {
+                Consumer thread = itr.next();
+                if (thread.isAlive()) {
+                    running++;
+                }
+            }
+
+            if (running <= 0) {
+                System.out.println("All threads completed their work");
+                break;
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+            }
+        }
+        Iterator<Consumer> itr = threads.iterator();
+        while (itr.hasNext()) {
+            Consumer thread = itr.next();
+        }
+    }
+
+    public void showParameters() {
+        System.out.println("Connecting to URL: " + url + " (" + user + ":" + password + ")");
+        System.out.println("Consuming " + (topic ? "topic" : "queue") + ": " + subject);
+        System.out.println("Using a " + (durable ? "durable" : "non-durable") + " subscription");
+        System.out.println("Running " + parallelThreads + " parallel threads");
+    }
+
+    public void run() {
+        try {
+            running = true;
+
+            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(user, password, url);
+            Connection connection = connectionFactory.createConnection();
+            if (durable && clientId != null && clientId.length() > 0 && !"null".equals(clientId)) {
+                connection.setClientID(clientId);
+            }
+            connection.setExceptionListener(this);
+            connection.start();
+
+            session = connection.createSession(transacted, ackMode);
+            if (topic) {
+                destination = session.createTopic(subject);
+            } else {
+                destination = session.createQueue(subject);
+            }
+
+            replyProducer = session.createProducer(null);
+            replyProducer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+
+            MessageConsumer consumer = null;
+            if (durable && topic) {
+                consumer = session.createDurableSubscriber((Topic) destination, consumerName);
+            } else {
+                consumer = session.createConsumer(destination);
+            }
+
+            if (maxMessages > 0) {
+                consumeMessagesAndClose(connection, session, consumer);
+            } else {
+                if (receiveTimeOut == 0) {
+                    consumer.setMessageListener(this);
+                } else {
+                    consumeMessagesAndClose(connection, session, consumer, receiveTimeOut);
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("[" + this.getName() + "] Caught: " + e);
+            e.printStackTrace();
+        }
+    }
+
+    public void onMessage(Message message) {
+
+		messagesReceived++;
+
+        try {
+
+            if (message instanceof TextMessage) {
+                TextMessage txtMsg = (TextMessage) message;
+                if (verbose) {
+
+                    String msg = txtMsg.getText();
+                    int length = msg.length();
+                    if (length > 50) {
+                        msg = msg.substring(0, 50) + "...";
+                    }
+                    System.out.println("[" + this.getName() + "] Received: '" + msg + "' (length " + length + ")");
+                }
+            } else {
+                if (verbose) {
+                    System.out.println("[" + this.getName() + "] Received: '" + message + "'");
+                }
+            }
+
+            if (message.getJMSReplyTo() != null) {
+                replyProducer.send(message.getJMSReplyTo(), session.createTextMessage("Reply: " + message.getJMSMessageID()));
+            }
+
+            if (transacted) {
+				if ((messagesReceived % batch) == 0) {
+					System.out.println("Commiting transaction for last " + batch + " messages; messages so far = " + messagesReceived);
+					session.commit();
 				}
-				sb.append("</msg>");
-				
-				if(sb.length() > 11) {
-					notify(sb.toString());
+            } else if (ackMode == Session.CLIENT_ACKNOWLEDGE) {
+				if ((messagesReceived % batch) == 0) {
+					System.out.println("Acknowledging last " + batch + " messages; messages so far = " + messagesReceived);
+					message.acknowledge();
 				}
-				
-				try {
-					Thread.sleep(timeout);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		public void notify(String msg) {
-			log.info("Notify: " + msg);
-		}
-	}
+            }
+
+        } catch (JMSException e) {
+            System.out.println("[" + this.getName() + "] Caught: " + e);
+            e.printStackTrace();
+        } finally {
+            if (sleepTime > 0) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                }
+            }
+        }
+    }
+
+    public synchronized void onException(JMSException ex) {
+        System.out.println("[" + this.getName() + "] JMS Exception occured.  Shutting down client.");
+        running = false;
+    }
+
+    synchronized boolean isRunning() {
+        return running;
+    }
+
+    protected void consumeMessagesAndClose(Connection connection, Session session, MessageConsumer consumer) throws JMSException,
+            IOException {
+        System.out.println("[" + this.getName() + "] We are about to wait until we consume: " + maxMessages
+                + " message(s) then we will shutdown");
+
+        for (int i = 0; i < maxMessages && isRunning();) {
+            Message message = consumer.receive(1000);
+            if (message != null) {
+                i++;
+                onMessage(message);
+            }
+        }
+        System.out.println("[" + this.getName() + "] Closing connection");
+        consumer.close();
+        session.close();
+        connection.close();
+        if (pauseBeforeShutdown) {
+            System.out.println("[" + this.getName() + "] Press return to shut down");
+            System.in.read();
+        }
+    }
+
+    protected void consumeMessagesAndClose(Connection connection, Session session, MessageConsumer consumer, long timeout)
+            throws JMSException, IOException {
+        System.out.println("[" + this.getName() + "] We will consume messages while they continue to be delivered within: " + timeout
+                + " ms, and then we will shutdown");
+
+        Message message;
+        while ((message = consumer.receive(timeout)) != null) {
+            onMessage(message);
+        }
+
+        System.out.println("[" + this.getName() + "] Closing connection");
+        consumer.close();
+        session.close();
+        connection.close();
+        if (pauseBeforeShutdown) {
+            System.out.println("[" + this.getName() + "] Press return to shut down");
+            System.in.read();
+        }
+    }
+
+    public void setAckMode(String ackMode) {
+        if ("CLIENT_ACKNOWLEDGE".equals(ackMode)) {
+            this.ackMode = Session.CLIENT_ACKNOWLEDGE;
+        }
+        if ("AUTO_ACKNOWLEDGE".equals(ackMode)) {
+            this.ackMode = Session.AUTO_ACKNOWLEDGE;
+        }
+        if ("DUPS_OK_ACKNOWLEDGE".equals(ackMode)) {
+            this.ackMode = Session.DUPS_OK_ACKNOWLEDGE;
+        }
+        if ("SESSION_TRANSACTED".equals(ackMode)) {
+            this.ackMode = Session.SESSION_TRANSACTED;
+        }
+    }
+
+    public void setClientId(String clientID) {
+        this.clientId = clientID;
+    }
+
+    public void setConsumerName(String consumerName) {
+        this.consumerName = consumerName;
+    }
+
+    public void setDurable(boolean durable) {
+        this.durable = durable;
+    }
+
+    public void setMaxMessages(int maxMessages) {
+        this.maxMessages = maxMessages;
+    }
+
+    public void setPauseBeforeShutdown(boolean pauseBeforeShutdown) {
+        this.pauseBeforeShutdown = pauseBeforeShutdown;
+    }
+
+    public void setPassword(String pwd) {
+        this.password = pwd;
+    }
+
+    public void setReceiveTimeOut(long receiveTimeOut) {
+        this.receiveTimeOut = receiveTimeOut;
+    }
+
+    public void setSleepTime(long sleepTime) {
+        this.sleepTime = sleepTime;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setParallelThreads(int parallelThreads) {
+        if (parallelThreads < 1) {
+            parallelThreads = 1;
+        }
+        this.parallelThreads = parallelThreads;
+    }
+
+    public void setTopic(boolean topic) {
+        this.topic = topic;
+    }
+
+    public void setQueue(boolean queue) {
+        this.topic = !queue;
+    }
+
+    public void setTransacted(boolean transacted) {
+        this.transacted = transacted;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
+    public void setBatch(long batch) {
+        this.batch = batch;
+    }
 }
-
