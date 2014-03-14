@@ -9,6 +9,10 @@ quickstarts:
     short_description: OSGi Blueprint Camel route. Uses timer to trigger java bean invocation.
     version: 0.0.1
     manifest: manifest.yml
+  - name: camel-smooks
+    short_description: OSGi Blueprint Camel smooks example.
+    version: 0.0.1
+    manifest: manifest.yml
   - name: cxf-raw-http-client
     short_description: Reads in a raw soap message and fires it at a soap endpoint.
     version: 0.0.1

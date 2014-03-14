@@ -1,0 +1,30 @@
+--- 
+subs: 
+  pom.xml: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
+  - "@packaging"
+  - "@project_version"
+  - "@name"
+  - "@camel_version"
+  - "@fabric_host"
+  - "@package"
+  src/main/resources/OSGI-INF/blueprint/blueprint.xml: 
+  - "@package"
+  src/test/java/@base_path/RouteTest.java: 
+  - "@package"
+  README.md: 
+  - "@project_version"
+  - "@group_id"
+  - "@artifact_id"
+copies: 
+  src/main/resources/log4j.properties: src/main/resources/log4j.properties
+  src/main/resources/smooks-config.xml: src/main/resources/smooks-config.xml
+  src/main/resources/OSGI-INF/blueprint/blueprint.xml: src/main/resources/OSGI-INF/blueprint/blueprint.xml
+  pom.xml: pom.xml
+  README.md: README.md
+  src/test/java/org/fusegen/test/RouteTest.java: src/test/java/@base_path/RouteTest.java
+description: OSGi Blueprint Camel Smooks route example. Uses a timer to trigger route.
+short_description: OSGi Blueprint Camel Smooks route example.
+version: 0.0.1  

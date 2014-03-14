@@ -92,6 +92,7 @@
                                     <wsdl>${basedir}/src/main/resources/wsdl/person.wsdl</wsdl>
                                     <extraargs>
                                         <extraarg>-verbose</extraarg>
+										<extraarg>-all</extraarg>
                                     </extraargs>
                                 </wsdlOption>
 
@@ -194,12 +195,77 @@
         </pluginRepository>
     </pluginRepositories>
 
+	<profiles>
+        <profile>
+            <id>server</id>
+            <build>
+                <defaultGoal>test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>@package.wsdl_first.Person_Soap_Server</mainClass>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-rt-transports-http-jetty</artifactId>
+                    <version>${cxf.version}</version>
+                </dependency>
+				<dependency>
+	                    <groupId>org.apache.cxf</groupId>
+	                    <artifactId>cxf-rt-frontend-jaxws</artifactId>
+	                    <version>${cxf.version}</version>
+	            </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>client</id>
+            <build>
+                <defaultGoal>test</defaultGoal>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>@package.wsdl_first.Person_Soap_Client</mainClass>
+                                    <arguments>
+                                        <argument>src/main/resources/wsdl/Person.wsdl</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+	
+
 
 	<distributionManagement>
 	  <repository>
 	    <id>fabric-maven-proxy</id>
 	    <name>Fuse Fabric Maven Proxy (Hawtio)</name>
-	    <url>http://admin:admin@fabric_host:8107/maven/upload/</url>
+	    <url>http://admin:admin@fabric_host:8101/maven/upload/</url>
 	  </repository>
 	</distributionManagement>
 
