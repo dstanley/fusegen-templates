@@ -2,9 +2,19 @@
 <blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:camel="http://camel.apache.org/schema/blueprint"
+	   xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0"
        xsi:schemaLocation="
        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+  <!-- OSGI blueprint property placeholder -->
+  <cm:property-placeholder id="myblueprint.placeholder" persistent-id="camel.smooks">
+      <!-- list some properties for this test -->
+      <cm:default-properties>
+          <cm:property name="configfile" value="./etc/smooks-config.xml"/>
+      </cm:default-properties>
+  </cm:property-placeholder>
+
 
   <camelContext id="blueprintContext" trace="false" xmlns="http://camel.apache.org/schema/blueprint">
     <route id="timerToLog">
@@ -12,13 +22,10 @@
       <setBody>
           <simple>Tom,Fennelly,Male,4,Ireland\r\nMike,Fennelly,Male,2,Ireland</simple>
       </setBody>
-	  <to uri="smooks://smooks-config.xml"/>
+	  <to uri="smooks://{{configfile}}"/>
       <log message="The message contains ${body}"/>
       <to uri="mock:result"/>
     </route>
   </camelContext>
-
-
-
 
 </blueprint>

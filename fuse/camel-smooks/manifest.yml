@@ -20,7 +20,8 @@ subs:
   - "@artifact_id"
 copies: 
   src/main/resources/log4j.properties: src/main/resources/log4j.properties
-  src/main/resources/smooks-config.xml: src/main/resources/smooks-config.xml
+  etc/smooks-config.xml: etc/smooks-config.xml
+  etc/camel.smooks.cfg: etc/camel.smooks.cfg
   src/main/resources/OSGI-INF/blueprint/blueprint.xml: src/main/resources/OSGI-INF/blueprint/blueprint.xml
   pom.xml: pom.xml
   README.md: README.md
