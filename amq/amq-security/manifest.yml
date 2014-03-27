@@ -1,0 +1,22 @@
+--- 
+subs: 
+  README.md: 
+  - "@project_version"
+copies: 
+  client/client.ks: client/client.ks
+  client/client.ts: client/client.ts
+  etc/activemq.xml: etc/activemq.xml
+  etc/groups.properties: etc/groups.properties
+  etc/keys.properties: etc/keys.properties
+  etc/users.properties: etc/users.properties
+  etc/broker.ks: etc/broker.ks
+  etc/jmxusers.properties: etc/jmxusers.properties
+  etc/org.apache.karaf.jaas.cfg: etc/org.apache.karaf.jaas.cfg
+  etc/broker.ts: etc/broker.ts
+  etc/key_auth.xml: etc/key_auth.xml
+  etc/org.apache.karaf.shell.cfg: etc/org.apache.karaf.shell.cfg
+  util/keys.sh: util/keys.sh
+  README.md: README.md
+version: 0.0.1  
+short_description: Security configuration example for JBoss A-MQ (karaf)
+description: Security configuration example for JBoss A-MQ (karaf)
