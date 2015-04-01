@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+  
+  <parent>
+    <groupId>@group_id</groupId>
+    <artifactId>@artifact_id</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+   
+  <groupId>@group_id</groupId>
+  <artifactId>osgi-test-hello-world-bundle</artifactId>
+  <packaging>bundle</packaging>
+  <name>osgi-test-hello-world-bundle</name>
+
+  <url>http://www.jboss.org/products/fuse</url>
+
+  <properties>
+	<spring.version>3.1.3.RELEASE</spring.version>
+  </properties>
+
+  <build>
+       <resources>
+            <!-- standard Maven folder -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.3.7</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            !@package.osgi.helloworld.internal,
+                            @package.osgi.helloworld*
+                        </Export-Package>
+                        <Private-Package>
+                        	@package.osgi.helloworld.internal
+                        </Private-Package>
+                        <Import-Package>*</Import-Package>
+                        <Include-Resource>src/main/resources</Include-Resource>
+                    </instructions>
+
+                </configuration>
+
+            </plugin>
+        </plugins>
+    </build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.5</version>
+		</dependency>
+		
+	      <!-- logging -->
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-api</artifactId>
+	      <version>1.7.5</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>slf4j-log4j12</artifactId>
+	      <version>1.7.5</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.slf4j</groupId>
+	      <artifactId>jcl-over-slf4j</artifactId>
+	      <version>1.7.5</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>log4j</groupId>
+	      <artifactId>log4j</artifactId>
+	      <version>1.2.17</version>
+	    </dependency>
+
+	  	<dependency>
+	  		<groupId>org.springframework</groupId>
+	  		<artifactId>spring-context</artifactId>
+	  		<version>${spring.version}</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>org.springframework</groupId>
+	  		<artifactId>spring-core</artifactId>
+	  		<version>${spring.version}</version>
+	  	</dependency>
+	</dependencies>		
+	
+	
+	<repositories>
+        <repository> 
+            <id>jbossfuse.m2</id>
+            <name>JBoss Fuse Community Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>jbossfuse.ea</id>
+            <name>JBoss Fuse Community Early Access Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/ea</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+         <pluginRepository>
+            <id>jbossfuse.m2</id>
+            <name>JBoss Fuse Community Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/repositories/releases</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+         <pluginRepository>
+            <id>jbossfuse.ea</id>
+            <name>JBoss Fuse Community Early Access Release Repository</name>
+            <url>http://repository.jboss.org/nexus/content/groups/ea</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
+  
+
+</project>
